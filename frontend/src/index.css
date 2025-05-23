@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body, #root {
+  height: 100%;
+}
+
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -29,7 +33,7 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
+  display: flow;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;

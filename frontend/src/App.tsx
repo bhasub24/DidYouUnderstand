@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Paperclip, Mic, Menu } from 'lucide-react';
+import { Send, Plus, Home, Mic, Menu, ArrowLeft, MoveLeft, HomeIcon } from 'lucide-react';
+import './App.css';
 
 export default function ChatbotUI() {
   const [messages, setMessages] = useState([
@@ -42,12 +43,21 @@ export default function ChatbotUI() {
     <div className="parentdiv flex h-screen bg-gray-100">
       {/* Sidebar */}
       <div className={`sidebar transition-all duration-300 bg-gray-100 p-4 ${sidebarOpen ? "w-64" : "w-16"} shadow-lg`}>
-        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="mb-4">
-          <Menu />
+        <div className='flex'>
+        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="sidebar-button mb-4 border border-transparent hover:border-gray-300 transition-colors duration-200">
+          <MoveLeft className='left-arrow' />
         </button>
+        </div>
         {sidebarOpen && (
           <div className="space-y-4">
-            <button className="text-left w-full px-2 py-1 bg-blue-500 text-white rounded">🏠 Home</button>
+            <div className='flex'>
+            <button className="flex home-button text-left w-full px-2 py-1 bg-blue-500 text-white rounded">
+              <HomeIcon className='home-icon'/> 
+              <div className="home-text">
+                Home
+              </div>
+            </button>
+            </div>
             <div className="mt-4">
               <h2 className="font-bold text-gray-700 mb-2">Learning Sessions</h2>
               <ul className="space-y-2">
@@ -60,38 +70,96 @@ export default function ChatbotUI() {
         )}
       </div>
 
-      {/* Main Chat UI */}
-      <div className="flex flex-col flex-1 max-w-5xl mx-auto bg-gray-50 border rounded-lg shadow-lg overflow-hidden">
-        {/* Header */}
-        <div className="bg-blue-600 text-white p-4 shadow">
-          <h1 className="text-xl font-bold">Chat Assistant</h1>
-          <p className="text-sm text-blue-100">Online | Ready to help</p>
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full">
+        {/* Chat Messages Area */}
+        <div className="flex-1 flex flex-col justify-center px-6">
+          <div className="w-full max-w-3xl mx-auto">
+            {messages.length === 1 ? (
+              // Welcome state - single message centered
+              <div className="text-center mb-8">
+                <div className="inline-block border border-gray-300 rounded-lg px-4 py-3 bg-white shadow-sm">
+                  <p className="text-gray-800 text-lg">{messages[0].text}</p>
+                </div>
+              </div>
+            ) : (
+              // Conversation state - messages in chat format
+              <div className="space-y-4 mb-8">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-sm px-4 py-2 rounded-lg ${
+                        message.sender === 'user'
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-100 text-gray-800'
+                      }`}
+                    >
+                      {message.text}
+                    </div>
+                  </div>
+                ))}
+                
+                {isTyping && (
+                  <div className="flex justify-start">
+                    <div className="bg-gray-100 text-gray-800 max-w-sm px-4 py-2 rounded-lg">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
         </div>
 
-        {/* Input area */}
-        <div className="border-t border-gray-300 p-4 bg-white">
-          <div className="flex items-center">
-            <button className="p-2 rounded-full text-gray-500 hover:bg-gray-100"><Paperclip size={20} /></button>
-            <div className="flex-1 mx-2">
-              <textarea
+        {/* Input Area - Fixed at bottom */}
+        <div className="p-6 bg-white border-gray-100">
+          <div className="w-full max-w-3xl mx-auto">
+            <div className="flex items-center bg-white border-gray-300 rounded-full px-4 py-2.5 shadow-sm">
+              
+              {/* Input field */}
+              <input
+                type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder="Type your message..."
-                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                rows={1}
+                // onKeyPress={handleKeyPress}
+                placeholder="Ask anything"
+                className="flex-1 mx-4 bg-transparent focus:outline-none text-gray-800 placeholder-gray-500 text-base"
               />
+              
+              {/* Left side buttons */} 
+              <div>
+              <div className="flex items-center space-x-3 text-gray-500">
+                <button className="hover:text-gray-700 transition-colors">
+                  <Plus className="w-5 h-5" />
+                </button>
+                <button className="flex items-center hover:text-gray-700 transition-colors">
+                  <Menu className="w-4 h-4" />
+                  <span className="ml-1 text-sm hidden sm:inline">Tools</span>
+                </button>
+              </div>
+
+              {/* Right side buttons */}
+              <div className="flex items-center space-x-3">
+                <button className="text-gray-500 hover:text-gray-700 transition-colors">
+                  <Mic className="w-5 h-5" />
+                </button>
+                <button 
+                  onClick={handleSendMessage}
+                  className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                >
+                  <Send className="w-4 h-4" />
+                </button>
+              </div>
+              </div>
             </div>
-            <button className="p-2 rounded-full text-gray-500 hover:bg-gray-100"><Mic size={20} /></button>
-            <button
-              onClick={handleSendMessage}
-              className={`p-2 ml-2 rounded-full ${
-                inputValue.trim() ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-400'
-              }`}
-              disabled={!inputValue.trim()}
-            >
-              <Send size={20} />
-            </button>
           </div>
         </div>
       </div>
