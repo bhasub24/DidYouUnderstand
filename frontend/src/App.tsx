@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Plus, Home, Mic, Menu, ArrowLeft, MoveLeft, HomeIcon } from 'lucide-react';
 import './App.css';
+import Input from './input';
+import { AnimatedMessage } from './floated-animation';
 
 export default function ChatbotUI() {
   const [messages, setMessages] = useState([
@@ -10,6 +12,9 @@ export default function ChatbotUI() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [floatingMessage, setFloatingMessage] = useState<string | null>(null);
+
+  
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -78,7 +83,7 @@ export default function ChatbotUI() {
             {messages.length === 1 ? (
               // Welcome state - single message centered
               <div className="text-center mb-8">
-                <div className="inline-block border border-gray-300 rounded-lg px-4 py-3 bg-white shadow-sm">
+                <div className="inline-block border-gray-300 rounded-lg px-4 py-3 bg-white shadow-sm">
                   <p className="text-gray-800 text-lg">{messages[0].text}</p>
                 </div>
               </div>
@@ -122,43 +127,11 @@ export default function ChatbotUI() {
         {/* Input Area - Fixed at bottom */}
         <div className="p-6 bg-white border-gray-100">
           <div className="w-full max-w-3xl mx-auto">
-            <div className="flex items-center bg-white border-gray-300 rounded-full px-4 py-2.5 shadow-sm">
+            <div className="block items-center bg-white border-gray-300 rounded-full px-4 py-2.5 shadow-sm">
               
               {/* Input field */}
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                // onKeyPress={handleKeyPress}
-                placeholder="Ask anything"
-                className="flex-1 mx-4 bg-transparent focus:outline-none text-gray-800 placeholder-gray-500 text-base"
-              />
-              
-              {/* Left side buttons */} 
-              <div>
-              <div className="flex items-center space-x-3 text-gray-500">
-                <button className="hover:text-gray-700 transition-colors">
-                  <Plus className="w-5 h-5" />
-                </button>
-                <button className="flex items-center hover:text-gray-700 transition-colors">
-                  <Menu className="w-4 h-4" />
-                  <span className="ml-1 text-sm hidden sm:inline">Tools</span>
-                </button>
-              </div>
-
-              {/* Right side buttons */}
-              <div className="flex items-center space-x-3">
-                <button className="text-gray-500 hover:text-gray-700 transition-colors">
-                  <Mic className="w-5 h-5" />
-                </button>
-                <button 
-                  onClick={handleSendMessage}
-                  className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
-                >
-                  <Send className="w-4 h-4" />
-                </button>
-              </div>
-              </div>
+              <Input />
+ 
             </div>
           </div>
         </div>

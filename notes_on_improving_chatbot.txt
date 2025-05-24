@@ -1,0 +1,23 @@
+1) In this statement while i was working on one problem in PPO,
+  
+Code:
+# Compute returns (used for value function loss)
+returns = advantages + old_values.detach()
+
+My question:  
+is why is old_value.detatch() there, why is gradient not computed with old_values?
+
+Behavior expected: 
+The first thing the BOT needs to do is to understand what is that fundamental knowledge which the user doesn't know.
+Then target to answer precisely.
+
+Behavior observed: 
+But the chatgpt gave me so many explanations and then finally gave the answer which i was expecting that, 
+
+Here, returns depends on old_values, and old_values comes from old_policy, which is a neural network.
+
+If old_policy shares parameters with your current model (or was not frozen), then:
+
+🔥 The loss would propagate gradients into the old_values computation.
+
+Even though you're optimizing current_value_net, PyTorch will try to compute gradients of with respect to everything in the computation graph — including V_\text{old}(s_t).
