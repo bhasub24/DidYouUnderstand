@@ -1,3 +1,28 @@
+Notes on code written
+1) graph builder
+Let’s say you have this graph:
+
+Q1 → Q2 → Q4
+     ↘ Q3
+     
+If you call get_path_to_root("Q4"), it will:
+
+Start at Q4
+
+Get parent Q2
+
+Get parent Q1
+
+Reached root
+
+And return:
+["Q1", "Q2", "Q4"]
+
+
+
+
+
+ChatBot experience
 1) In this statement while i was working on one problem in PPO,
   
 Code:
